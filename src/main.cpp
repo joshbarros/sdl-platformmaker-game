@@ -29,6 +29,7 @@ using pm::Entity;
 using pm::InputState;
 using pm::Level;
 using pm::Player;
+using pm::Texture;
 using pm::TileDef;
 using pm::World;
 using namespace pm::palette;
@@ -59,9 +60,28 @@ struct EditorState {
     float statusTimer = 3.0f;
 };
 
+struct Art {
+    Texture hero;
+    Texture walker;
+    Texture coin;
+    Texture tileGround;
+    Texture tileBrick;
+    Texture background;
+
+    void destroy(pm::Renderer& renderer) {
+        renderer.destroyTexture(hero);
+        renderer.destroyTexture(walker);
+        renderer.destroyTexture(coin);
+        renderer.destroyTexture(tileGround);
+        renderer.destroyTexture(tileBrick);
+        renderer.destroyTexture(background);
+    }
+};
+
 struct App {
     Content content;
     Level level;
+    Art art;
     std::unique_ptr<World> world;
     std::string assetDir;
     std::string levelPath;
@@ -91,8 +111,26 @@ Color shade(Color c, float factor) {
                  clamp8(float(c.b) * factor), c.a};
 }
 
-void drawTile(pm::Renderer& r, const TileDef& tile, float x, float y, float size) {
+void drawTile(pm::Renderer& r, const TileDef& tile, float x, float y, float size,
+              const Art& art, bool topExposed = true) {
     if (tile.name == "air") return;
+
+    if (tile.name == "ground" && art.tileGround.valid()) {
+        SDL_FRect src = art.tileGround.src;
+        if (!topExposed) {
+            // reuse the same texture for buried tiles, skipping the grass band
+            const float cut = src.h * 0.42f;
+            src.y += cut;
+            src.h -= cut;
+        }
+        r.drawTexture(art.tileGround, src, SDL_FRect{x, y, size, size});
+        return;
+    }
+
+    if (tile.name == "brick" && art.tileBrick.valid()) {
+        r.drawTexture(art.tileBrick, art.tileBrick.src, SDL_FRect{x, y, size, size});
+        return;
+    }
 
     if (tile.hazard) {
         const Color c = tile.color;
@@ -137,7 +175,21 @@ void drawTile(pm::Renderer& r, const TileDef& tile, float x, float y, float size
     }
 }
 
-void drawBackground(pm::Renderer& r, float camX, int viewW, int viewH, const std::string& theme) {
+void drawBackground(pm::Renderer& r, const Art& art, float camX, int viewW, int viewH,
+                    const std::string& theme) {
+    if (art.background.valid()) {
+        const float height = float(viewH);
+        const float width = height * (float(art.background.w) / float(art.background.h));
+        float offset = -std::fmod(camX * 0.25f, width);
+        if (offset > 0.0f) offset -= width;
+        // only sky and hills: the painted grass band would fight the real ground
+        const SDL_FRect src{0.0f, 0.0f, float(art.background.w), float(art.background.h) * 0.72f};
+        for (float x = offset; x < float(viewW); x += width) {
+            r.drawTexture(art.background, src, SDL_FRect{x, 0.0f, width, height});
+        }
+        return;
+    }
+
     const Color sky = themeSky(theme);
     r.fillRect(0, 0, float(viewW), float(viewH), sky);
 
@@ -156,7 +208,8 @@ void drawBackground(pm::Renderer& r, float camX, int viewW, int viewH, const std
     r.fillRect(0, groundY + 120.0f, float(viewW), float(viewH) - groundY - 120.0f, near);
 }
 
-void drawLevel(pm::Renderer& r, const App& app, float camX, float camY, int viewW, int viewH) {
+void drawLevel(pm::Renderer& r, const App& app, const Art& art, float camX, float camY,
+                   int viewW, int viewH) {
     const Level& level = app.level;
     const int x0 = std::max(0, static_cast<int>(std::floor(camX / pm::kTile)));
     const int x1 = std::min(level.w - 1,
@@ -169,14 +222,24 @@ void drawLevel(pm::Renderer& r, const App& app, float camX, float camY, int view
         for (int x = x0; x <= x1; ++x) {
             const int id = level.at(x, y);
             if (id <= 0) continue;
-            drawTile(r, app.content.tile(id), float(x * pm::kTile) - camX,
-                     float(y * pm::kTile) - camY, float(pm::kTile));
+            const TileDef& tile = app.content.tile(id);
+            const bool topExposed = tile.name != "ground" || y == 0 ||
+                                    app.content.tile(level.at(x, y - 1)).name != "ground";
+            drawTile(r, tile, float(x * pm::kTile) - camX, float(y * pm::kTile) - camY,
+                     float(pm::kTile), art, topExposed);
         }
+    }
+
+    // fill the space below the level so the backdrop doesn't show under the floor
+    const float levelBottom = float(level.h * pm::kTile) - camY;
+    if (levelBottom < float(viewH)) {
+        r.fillRect(0.0f, levelBottom, float(viewW), float(viewH) - levelBottom,
+                   Color{0x2e, 0x1a, 0x10, 255});
     }
 }
 
 void drawEntities(pm::Renderer& r, const Content& content, const std::vector<Entity>& entities,
-                    float camX, float camY) {
+                  const Art& art, float camX, float camY, float time) {
     for (const auto& e : entities) {
         if (!e.alive) continue;
         const pm::EntityDef* def = content.entity(e.type);
@@ -188,15 +251,29 @@ void drawEntities(pm::Renderer& r, const Content& content, const std::vector<Ent
         const float h = float(def->h) * pm::kTile;
 
         if (e.type == "coin") {
-            const float cx = x + w * 0.5f;
-            const float cy = y + h * 0.5f;
-            r.filledCircle(cx, cy, 11.0f, def->color);
-            r.filledCircle(cx, cy, 6.0f, shade(def->color, 1.25f));
+            const float bob = std::sin(time * 5.0f + float(e.tx)) * 2.0f;
+            if (art.coin.valid()) {
+                const float size = 28.0f;
+                r.drawTexture(art.coin, x + w * 0.5f - size * 0.5f,
+                              y + h * 0.5f - size * 0.5f + bob, size, size);
+            } else {
+                const float cx = x + w * 0.5f;
+                const float cy = y + h * 0.5f + bob;
+                r.filledCircle(cx, cy, 11.0f, def->color);
+                r.filledCircle(cx, cy, 6.0f, shade(def->color, 1.25f));
+            }
         } else if (e.type == "enemy.walker") {
-            r.fillRect(x + 3.0f, y + 6.0f, w - 6.0f, h - 7.0f, def->color);
-            r.fillRect(x + 7.0f, y + 12.0f, 5.0f, 7.0f, white);
-            r.fillRect(x + w - 12.0f, y + 12.0f, 5.0f, 7.0f, white);
-            r.fillRect(x + 3.0f, y + h - 4.0f, w - 6.0f, 4.0f, shade(def->color, 0.6f));
+            const float bob = std::sin(time * 9.0f + float(e.tx)) * 1.5f;
+            if (art.walker.valid()) {
+                const float size = 32.0f;
+                r.drawTexture(art.walker, x + w * 0.5f - size * 0.5f, y + h - size + bob, size,
+                              size, e.vx > 0.0f);
+            } else {
+                r.fillRect(x + 3.0f, y + 6.0f, w - 6.0f, h - 7.0f, def->color);
+                r.fillRect(x + 7.0f, y + 12.0f, 5.0f, 7.0f, white);
+                r.fillRect(x + w - 12.0f, y + 12.0f, 5.0f, 7.0f, white);
+                r.fillRect(x + 3.0f, y + h - 4.0f, w - 6.0f, 4.0f, shade(def->color, 0.6f));
+            }
         } else if (e.type == "checkpoint") {
             r.fillRect(x + 4.0f, y, 4.0f, h, shade(def->color, 0.5f));
             const Color flagColor = e.touched ? shade(def->color, 1.2f) : shade(def->color, 0.75f);
@@ -213,9 +290,18 @@ void drawEntities(pm::Renderer& r, const Content& content, const std::vector<Ent
     }
 }
 
-void drawPlayer(pm::Renderer& r, const Player& p, float camX, float camY) {
+void drawPlayer(pm::Renderer& r, const Player& p, const Art& art, float camX, float camY) {
     const float x = p.x - camX;
     const float y = p.y - camY;
+
+    if (art.hero.valid()) {
+        const float spriteW = 42.0f;
+        const float spriteH = 58.0f;
+        r.drawTexture(art.hero, x + p.w * 0.5f - spriteW * 0.5f, y + p.h - spriteH + 2.0f,
+                      spriteW, spriteH, !p.facingRight);
+        return;
+    }
+
     const Color body{0xf2, 0x6d, 0x5a, 255};
     r.fillRect(x + 2.0f, y + 10.0f, p.w - 4.0f, p.h - 18.0f, body);
     r.fillRect(x + 4.0f, y + 2.0f, p.w - 8.0f, 12.0f, shade(body, 1.15f));
@@ -295,7 +381,7 @@ SDL_FRect paletteTileRect(int index, int viewW, int viewH) {
     return SDL_FRect{startX + float(index) * (size + gap), float(viewH) - 62.0f, size, size};
 }
 
-void drawEditorUi(pm::Renderer& r, const App& app, int viewW, int viewH,
+void drawEditorUi(pm::Renderer& r, const App& app, const Art& art, int viewW, int viewH,
                   const std::optional<SDL_FRect>& cursor) {
     // top bar
     r.fillRect(0, 0, float(viewW), kTopBar, Color{0x16, 0x12, 0x24, 230});
@@ -324,7 +410,7 @@ void drawEditorUi(pm::Renderer& r, const App& app, int viewW, int viewH,
         const TileDef& tile = app.content.tiles[static_cast<std::size_t>(i)];
         const bool selected = !app.editor.entityMode && app.editor.brush == i;
         r.fillRect(box.x, box.y, box.w, box.h, Color{0x24, 0x1c, 0x38, 255});
-        if (i > 0) drawTile(r, tile, box.x + 4.0f, box.y + 4.0f, box.w - 8.0f);
+        if (i > 0) drawTile(r, tile, box.x + 4.0f, box.y + 4.0f, box.w - 8.0f, art);
         r.frameRect(box.x, box.y, box.w, box.h, selected ? accent : Color{0x3a, 0x2f, 0x52, 255},
                     selected ? 3.0f : 2.0f);
         r.text(std::to_string(i + 1), box.x + 4.0f, box.y + box.h - 16.0f, 12,
@@ -594,6 +680,20 @@ int main(int argc, char** argv) {
             return 1;
         }
 
+        auto loadArt = [&](const std::string& file) {
+            return renderer.loadTexture(app.assetDir + "art/" + file);
+        };
+        app.art.hero = loadArt("hero.png");
+        app.art.walker = loadArt("walker.png");
+        app.art.coin = loadArt("coin.png");
+        app.art.tileGround = loadArt("tile_ground.png");
+        app.art.tileBrick = loadArt("tile_brick.png");
+        app.art.background = loadArt("background.png");
+        std::printf("art: hero=%d walker=%d coin=%d ground=%d brick=%d bg=%d\n",
+                    app.art.hero.valid() ? 1 : 0, app.art.walker.valid() ? 1 : 0,
+                    app.art.coin.valid() ? 1 : 0, app.art.tileGround.valid() ? 1 : 0,
+                    app.art.tileBrick.valid() ? 1 : 0, app.art.background.valid() ? 1 : 0);
+
         app.editor.brush = 1;
         app.editor.camX = 0.0f;
         app.editor.camY = 0.0f;
@@ -848,24 +948,25 @@ int main(int argc, char** argv) {
             // ---- draw
             if (app.playing) {
                 const Camera cam = app.world->camera();
-                drawBackground(renderer, cam.x, viewW, viewH, app.level.theme);
-                drawLevel(renderer, app, cam.x, cam.y, viewW, viewH);
-                drawEntities(renderer, app.content, app.world->entities(), cam.x, cam.y);
-                drawPlayer(renderer, app.world->player(), cam.x, cam.y);
+                drawBackground(renderer, app.art, cam.x, viewW, viewH, app.level.theme);
+                drawLevel(renderer, app, app.art, cam.x, cam.y, viewW, viewH);
+                drawEntities(renderer, app.content, app.world->entities(), app.art, cam.x, cam.y,
+                             float(SDL_GetTicks()) / 1000.0f);
+                drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y);
                 drawPlayHud(renderer, *app.world, viewW, viewH, app.replayMode);
             } else {
-                drawBackground(renderer, app.editor.camX, viewW, viewH, app.level.theme);
-                drawLevel(renderer, app, app.editor.camX, app.editor.camY, viewW, viewH);
+                drawBackground(renderer, app.art, app.editor.camX, viewW, viewH, app.level.theme);
+                drawLevel(renderer, app, app.art, app.editor.camX, app.editor.camY, viewW, viewH);
                 drawEditorGrid(renderer, app.level, app.editor.camX, app.editor.camY, viewW,
                                viewH);
-                drawEntities(renderer, app.content, app.level.entities, app.editor.camX,
-                         app.editor.camY);
+                drawEntities(renderer, app.content, app.level.entities, app.art, app.editor.camX,
+                             app.editor.camY, 0.0f);
 
                 Player ghost;
                 ghost.x = float(app.level.startTx) * pm::kTile +
                           (pm::kTile - ghost.w) * 0.5f;
                 ghost.y = float(app.level.startTy) * pm::kTile + (pm::kTile - ghost.h);
-                drawPlayer(renderer, ghost, app.editor.camX, app.editor.camY);
+                drawPlayer(renderer, ghost, app.art, app.editor.camX, app.editor.camY);
 
                 std::optional<SDL_FRect> cursor;
                 const float wx = mouseX + app.editor.camX;
@@ -877,7 +978,7 @@ int main(int argc, char** argv) {
                                        float(ty * pm::kTile) - app.editor.camY,
                                        float(pm::kTile), float(pm::kTile)};
                 }
-                drawEditorUi(renderer, app, viewW, viewH, cursor);
+                drawEditorUi(renderer, app, app.art, viewW, viewH, cursor);
             }
 
             if (!opts.shotPath.empty() && !shotSaved) {
@@ -890,6 +991,7 @@ int main(int argc, char** argv) {
             renderer.endFrame();
         }
 
+        app.art.destroy(renderer);
         renderer.shutdown();
     } catch (const std::exception& e) {
         std::fprintf(stderr, "fatal: %s\n", e.what());

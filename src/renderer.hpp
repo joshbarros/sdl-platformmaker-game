@@ -31,12 +31,32 @@ inline constexpr Color white{0xff, 0xff, 0xff};
 
 enum class Align { Left, Center, Right };
 
+// Loaded image + its pixel size. Textures are created with nearest-neighbour
+// scaling so pixel art stays crisp when the sprite is upscaled.
+struct Texture {
+    SDL_Texture* handle = nullptr;
+    int w = 0;
+    int h = 0;
+    // Opaque bounding box inside the image, so sprites with transparent padding
+    // line up with the collision box instead of floating at the wrong scale.
+    SDL_FRect src{0.0f, 0.0f, 0.0f, 0.0f};
+
+    bool valid() const { return handle != nullptr; }
+};
+
 // Thin immediate-mode 2D layer on top of SDL_Renderer. No UI framework, no
 // retained widgets: the game draws its whole screen every frame.
 class Renderer {
 public:
     bool init(const std::string& fontPath, int width, int height);
     void shutdown();
+
+    Texture loadTexture(const std::string& path);
+    void destroyTexture(Texture& texture);
+    void drawTexture(const Texture& texture, const SDL_FRect& src, const SDL_FRect& dst,
+                     bool flipH = false);
+    void drawTexture(const Texture& texture, float x, float y, float w, float h,
+                     bool flipH = false);
 
     SDL_Window* window() const { return window_; }
     SDL_Renderer* sdl() const { return renderer_; }

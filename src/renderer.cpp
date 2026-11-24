@@ -2,9 +2,95 @@
 
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <stdexcept>
+#include <vector>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#define STBI_NO_STDIO
+#include "stb_image.h"
 
 namespace pm {
+namespace {
+
+bool readFile(const std::string& path, std::vector<unsigned char>& out) {
+    std::ifstream in(path, std::ios::binary);
+    if (!in) return false;
+    in.seekg(0, std::ios::end);
+    const auto size = static_cast<std::size_t>(in.tellg());
+    in.seekg(0, std::ios::beg);
+    out.resize(size);
+    in.read(reinterpret_cast<char*>(out.data()), static_cast<std::streamsize>(size));
+    return in.good() || in.eof();
+}
+
+} // namespace
+
+Texture Renderer::loadTexture(const std::string& path) {
+    Texture texture;
+    std::vector<unsigned char> bytes;
+    if (!readFile(path, bytes)) return texture;
+
+    int w = 0, h = 0, channels = 0;
+    unsigned char* pixels = stbi_load_from_memory(bytes.data(), static_cast<int>(bytes.size()),
+                                                  &w, &h, &channels, 4);
+    if (!pixels) return texture;
+
+    SDL_Surface* surface = SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32, pixels, w * 4);
+    if (surface) {
+        texture.handle = SDL_CreateTextureFromSurface(renderer_, surface);
+        SDL_DestroySurface(surface);
+    }
+
+    // Trim transparent padding so sprites line up with their collision box.
+    int minX = w, minY = h, maxX = -1, maxY = -1;
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) {
+            if (pixels[(static_cast<std::size_t>(y) * w + x) * 4 + 3] > 8) {
+                minX = std::min(minX, x);
+                maxX = std::max(maxX, x);
+                minY = std::min(minY, y);
+                maxY = std::max(maxY, y);
+            }
+        }
+    }
+    texture.src = (maxX >= minX && maxY >= minY)
+                      ? SDL_FRect{float(minX), float(minY), float(maxX - minX + 1),
+                                  float(maxY - minY + 1)}
+                      : SDL_FRect{0.0f, 0.0f, float(w), float(h)};
+
+    stbi_image_free(pixels);
+
+    if (texture.handle) {
+        SDL_SetTextureScaleMode(texture.handle, SDL_SCALEMODE_NEAREST);
+        SDL_SetTextureBlendMode(texture.handle, SDL_BLENDMODE_BLEND);
+        texture.w = w;
+        texture.h = h;
+    }
+    return texture;
+}
+
+void Renderer::destroyTexture(Texture& texture) {
+    if (texture.handle) SDL_DestroyTexture(texture.handle);
+    texture = Texture{};
+}
+
+void Renderer::drawTexture(const Texture& texture, const SDL_FRect& src, const SDL_FRect& dst,
+                           bool flipH) {
+    if (!texture.handle) return;
+    SDL_RenderTextureRotated(renderer_, texture.handle, &src, &dst, 0.0, nullptr,
+                             flipH ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
+
+void Renderer::drawTexture(const Texture& texture, float x, float y, float w, float h,
+                           bool flipH) {
+    if (!texture.handle) return;
+    const SDL_FRect src{0.0f, 0.0f, float(texture.w), float(texture.h)};
+    const SDL_FRect dst{x, y, w, h};
+    drawTexture(texture, src, dst, flipH);
+}
+
 
 bool Renderer::init(const std::string& fontPath, int width, int height) {
     fontPath_ = fontPath;
@@ -16,7 +102,7 @@ bool Renderer::init(const std::string& fontPath, int width, int height) {
         return false;
     }
 
-    window_ = SDL_CreateWindow("DECKFALL", width, height, SDL_WINDOW_RESIZABLE);
+    window_ = SDL_CreateWindow("PLATFORMMAKER", width, height, SDL_WINDOW_RESIZABLE);
     if (!window_) return false;
 
     renderer_ = SDL_CreateRenderer(window_, nullptr);

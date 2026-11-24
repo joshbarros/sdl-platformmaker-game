@@ -59,7 +59,7 @@ add_executable(platformmaker
   src/replay.cpp
   src/renderer.cpp)
 
-target_include_directories(platformmaker PRIVATE src)
+target_include_directories(platformmaker PRIVATE src third_party)
 target_compile_definitions(platformmaker PRIVATE
   PM_SOURCE_ASSETS="${CMAKE_CURRENT_SOURCE_DIR}/assets")
 target_link_libraries(platformmaker PRIVATE
