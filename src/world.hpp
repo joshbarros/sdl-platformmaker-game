@@ -27,6 +27,13 @@ struct Player {
     float respawnY = 0.0f;
 };
 
+struct Particle {
+    float x = 0.0f, y = 0.0f, vx = 0.0f, vy = 0.0f;
+    float life = 0.0f, maxLife = 1.0f;
+    float size = 2.0f;
+    Color color{255, 255, 255, 255};
+};
+
 struct Camera {
     float x = 0.0f;
     float y = 0.0f;
@@ -46,6 +53,7 @@ public:
     const Level& level() const { return level_; }
     const Player& player() const { return player_; }
     Camera camera() const { return camera_; }
+    const std::vector<Particle>& particles() const { return particles_; }
     int coins() const { return coins_; }
     int deaths() const { return deaths_; }
     bool finished() const { return finished_; }
@@ -76,6 +84,10 @@ private:
     int deaths_ = 0;
     bool finished_ = false;
     float elapsed_ = 0.0f;
+    std::vector<Particle> particles_;
+    float shake_ = 0.0f;
+    bool wasOnGround_ = false;
+    void spawnParticles(float x, float y, int count, Color color, float spread);
 };
 
 } // namespace pm

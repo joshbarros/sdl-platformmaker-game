@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 
 namespace pm {
 namespace {
@@ -151,8 +152,26 @@ void World::update(float dt, const InputState& input) {
         return;
     }
 
+    // landing dust
+    if (player_.onGround && !wasOnGround_ && player_.vy == 0.0f) {
+        spawnParticles(player_.x + player_.w * 0.5f, player_.y + player_.h, 6,
+                       Color{0xd8, 0xcc, 0xb0, 220}, 120.0f);
+    }
+    wasOnGround_ = player_.onGround;
+
     updateEntities(dt);
     checkEntityTouches();
+
+    for (auto& p : particles_) {
+        p.vy += 900.0f * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.life -= dt;
+    }
+    particles_.erase(std::remove_if(particles_.begin(), particles_.end(),
+                                    [](const Particle& p) { return p.life <= 0.0f; }),
+                     particles_.end());
+    shake_ = std::max(0.0f, shake_ - dt * 3.0f);
     updateCamera();
 }
 
@@ -221,8 +240,25 @@ void World::movePlayerY(float dy) {
     }
 }
 
+void World::spawnParticles(float px, float py, int count, Color color, float spread) {
+    for (int i = 0; i < count; ++i) {
+        Particle p;
+        p.x = px;
+        p.y = py;
+        p.vx = (float(std::rand() % 200) / 100.0f - 1.0f) * spread;
+        p.vy = -float(std::rand() % 120) / 100.0f * spread;
+        p.life = p.maxLife = 0.35f + float(std::rand() % 30) / 100.0f;
+        p.size = 2.0f + float(std::rand() % 2);
+        p.color = color;
+        particles_.push_back(p);
+    }
+}
+
 void World::hurt() {
     ++deaths_;
+    shake_ = 1.0f;
+    spawnParticles(player_.x + player_.w * 0.5f, player_.y + player_.h * 0.5f, 12,
+                   Color{0xe2, 0x60, 0x4a, 220}, 200.0f);
     player_.x = player_.respawnX;
     player_.y = player_.respawnY;
     player_.vx = 0.0f;
@@ -298,6 +334,9 @@ void World::checkEntityTouches() {
             if (stomping) {
                 e.alive = false;
                 player_.vy = kStompBounce;
+                spawnParticles(e.x + 16.0f, e.y + 20.0f, 10, Color{0x9a, 0xb8, 0x6a, 230},
+                               180.0f);
+                shake_ = 0.6f;
                 player_.onGround = false;
             } else {
                 hurt();
@@ -334,6 +373,11 @@ void World::updateCamera() {
     } else {
         camera_.x = std::clamp(targetX, 0.0f, levelW - float(viewW_));
     }
+
+    const float shakeX = shake_ > 0.0f ? (float(std::rand() % 7) - 3.0f) * shake_ : 0.0f;
+    const float shakeY = shake_ > 0.0f ? (float(std::rand() % 7) - 3.0f) * shake_ : 0.0f;
+    camera_.x += shakeX;
+    camera_.y += shakeY;
 
     if (levelH <= float(viewH_)) {
         camera_.y = -(float(viewH_) - levelH) * 0.5f;

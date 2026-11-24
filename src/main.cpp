@@ -1009,6 +1009,12 @@ int main(int argc, char** argv) {
                 drawLevel(renderer, app, app.art, cam.x, cam.y, viewW, viewH);
                 drawEntities(renderer, app.content, app.world->entities(), app.art, cam.x, cam.y,
                              float(SDL_GetTicks()) / 1000.0f);
+                for (const auto& p : app.world->particles()) {
+                    const float alpha = std::clamp(p.life / p.maxLife, 0.0f, 1.0f);
+                    Color c = p.color;
+                    c.a = Uint8(float(p.color.a) * alpha);
+                    renderer.fillRect(p.x - cam.x, p.y - cam.y, p.size, p.size, c);
+                }
                 drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y,
                            float(SDL_GetTicks()) / 1000.0f);
             } else {
@@ -1035,6 +1041,16 @@ int main(int argc, char** argv) {
                                        float(ty * pm::kTile) - app.editor.camY,
                                        float(pm::kTile), float(pm::kTile), accent, 2.0f);
                 }
+            }
+
+            // foreground silhouettes: dark grass at the bottom edge sells depth
+            for (int i = 0; i < 26; ++i) {
+                const float par = (app.playing ? app.world->camera().x : app.editor.camX) * 1.35f;
+                const float fx = float(i) * 26.0f - std::fmod(par, 26.0f) - 20.0f;
+                const float fh = 10.0f + 7.0f * std::sin(float(i) * 1.7f) + 4.0f;
+                renderer.fillRect(fx, float(viewH) - fh, 5.0f, fh, Color{0x14, 0x22, 0x12, 210});
+                renderer.fillRect(fx + 7.0f, float(viewH) - fh * 0.7f, 4.0f, fh * 0.7f,
+                                  Color{0x14, 0x22, 0x12, 190});
             }
 
             renderer.screenSpace();
