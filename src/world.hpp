@@ -39,6 +39,7 @@ public:
     World(Level level, const Content& content);
 
     void setViewport(int width, int height);
+    void resetCamera();
     void restart();
     void update(float dt, const InputState& input);
 

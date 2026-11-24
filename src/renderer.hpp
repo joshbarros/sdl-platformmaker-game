@@ -59,6 +59,11 @@ public:
                      bool flipH = false);
 
     SDL_Window* window() const { return window_; }
+
+    // World is drawn at 480x360 and scaled up to the window (SNES framing);
+    // UI is drawn in window pixels.
+    bool worldSpace();
+    void screenSpace();
     SDL_Renderer* sdl() const { return renderer_; }
 
     void beginFrame(Color clear);

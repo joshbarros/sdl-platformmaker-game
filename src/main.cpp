@@ -36,6 +36,8 @@ using namespace pm::palette;
 
 constexpr int kWindowW = 1280;
 constexpr int kWindowH = 800;
+constexpr int kViewW = 480;
+constexpr int kViewH = 360;
 constexpr float kBarHeight = 86.0f;
 constexpr float kTopBar = 44.0f;
 
@@ -178,6 +180,7 @@ void drawTile(pm::Renderer& r, const TileDef& tile, float x, float y, float size
 void drawBackground(pm::Renderer& r, const Art& art, float camX, int viewW, int viewH,
                     const std::string& theme) {
     if (art.background.valid()) {
+        r.fillRect(0.0f, 0.0f, float(viewW), float(viewH), themeSky(theme));
         const float height = float(viewH);
         const float width = height * (float(art.background.w) / float(art.background.h));
         float offset = -std::fmod(camX * 0.25f, width);
@@ -694,6 +697,10 @@ int main(int argc, char** argv) {
                     app.art.coin.valid() ? 1 : 0, app.art.tileGround.valid() ? 1 : 0,
                     app.art.tileBrick.valid() ? 1 : 0, app.art.background.valid() ? 1 : 0);
 
+        if (opts.shotPath.empty()) {
+            SDL_SetWindowFullscreen(renderer.window(), true);
+        }
+
         app.editor.brush = 1;
         app.editor.camX = 0.0f;
         app.editor.camY = 0.0f;
@@ -705,7 +712,7 @@ int main(int argc, char** argv) {
             // Headless-ish smoke test: hold right and jump on a rhythm so the
             // physics runs for a while before the screenshot is taken.
             if (opts.autoSeconds > 0.0f) {
-                app.world->setViewport(kWindowW, kWindowH);
+                app.world->setViewport(kViewW, kViewH);
                 const int steps = static_cast<int>(opts.autoSeconds * 120.0f);
                 for (int i = 0; i < steps; ++i) {
                     InputState in;
@@ -771,9 +778,20 @@ int main(int argc, char** argv) {
             frameDt = std::min(frameDt, 0.1f);
             accumulator += frameDt;
 
-            int viewW = kWindowW;
-            int viewH = kWindowH;
-            SDL_GetWindowSize(renderer.window(), &viewW, &viewH);
+            int winW = kWindowW;
+            int winH = kWindowH;
+            SDL_GetWindowSize(renderer.window(), &winW, &winH);
+
+            // World canvas is 480x360 (15x11 tiles) so the camera sits close,
+            // like a SNES game. UI is drawn at window resolution.
+            constexpr int viewW = kViewW;
+            constexpr int viewH = kViewH;
+            const float zoom = std::max(1.0f, std::min(float(winW) / float(viewW),
+                                                      float(winH) / float(viewH)));
+            const float padX = (float(winW) - float(viewW) * zoom) * 0.5f;
+            const float padY = (float(winH) - float(viewH) * zoom) * 0.5f;
+            auto toVirtualX = [&](float x) { return (x - padX) / zoom; };
+            auto toVirtualY = [&](float y) { return (y - padY) / zoom; };
 
             float mouseX = 0.0f;
             float mouseY = 0.0f;
@@ -787,7 +805,10 @@ int main(int argc, char** argv) {
                 }
                 if (event.type == SDL_EVENT_KEY_DOWN) {
                     const SDL_Keycode key = event.key.key;
-                    if (key == SDLK_ESCAPE) {
+                    if (key == SDLK_F11) {
+                        const bool fs = (SDL_GetWindowFlags(renderer.window()) & SDL_WINDOW_FULLSCREEN) != 0;
+                        SDL_SetWindowFullscreen(renderer.window(), !fs);
+                    } else if (key == SDLK_ESCAPE) {
                         if (app.playing) {
                             leavePlay();
                         } else {
@@ -856,19 +877,19 @@ int main(int argc, char** argv) {
                     const float mx = event.button.x;
                     const float my = event.button.y;
 
-                    if (my > float(viewH) - kBarHeight) {
+                    if (my > float(winH) - kBarHeight) {
                         // palette click
                         for (int i = 0; i < static_cast<int>(app.content.tiles.size()) && i < 6; ++i) {
-                            const SDL_FRect box = paletteTileRect(i, viewW, viewH);
+                            const SDL_FRect box = paletteTileRect(i, winW, winH);
                             if (mx >= box.x && mx <= box.x + box.w && my >= box.y &&
                                 my <= box.y + box.h) {
                                 app.editor.brush = i;
                                 app.editor.entityMode = false;
                             }
                         }
-                        float ex = paletteTileRect(5, viewW, viewH).x + 44.0f + 24.0f;
+                        float ex = paletteTileRect(5, winW, winH).x + 44.0f + 24.0f;
                         for (int i = 0; i < static_cast<int>(app.content.entityOrder.size()); ++i) {
-                            const SDL_FRect box{ex, float(viewH) - 58.0f, 34.0f, 34.0f};
+                            const SDL_FRect box{ex, float(winH) - 58.0f, 34.0f, 34.0f};
                             if (mx >= box.x && mx <= box.x + box.w && my >= box.y &&
                                 my <= box.y + box.h) {
                                 app.editor.entityIndex = i;
@@ -879,21 +900,21 @@ int main(int argc, char** argv) {
                         continue;
                     }
 
-                    const float worldX = mx + app.editor.camX;
-                    const float worldY = my + app.editor.camY;
+                    const float worldX = toVirtualX(mx) + app.editor.camX;
+                    const float worldY = toVirtualY(my) + app.editor.camY;
                     const bool erase = event.button.button == SDL_BUTTON_RIGHT;
                     paintAt(app, worldX, worldY, erase);
                 }
                 if (event.type == SDL_EVENT_MOUSE_MOTION && !app.playing) {
                     if (event.motion.state & SDL_BUTTON_LMASK) {
-                        if (event.motion.y < float(viewH) - kBarHeight && event.motion.y > kTopBar) {
-                            paintAt(app, event.motion.x + app.editor.camX,
-                                    event.motion.y + app.editor.camY, false);
+                        if (event.motion.y < float(winH) - kBarHeight && event.motion.y > kTopBar) {
+                            paintAt(app, toVirtualX(event.motion.x) + app.editor.camX,
+                                    toVirtualY(event.motion.y) + app.editor.camY, false);
                         }
                     } else if (event.motion.state & SDL_BUTTON_RMASK) {
-                        if (event.motion.y < float(viewH) - kBarHeight && event.motion.y > kTopBar) {
-                            paintAt(app, event.motion.x + app.editor.camX,
-                                    event.motion.y + app.editor.camY, true);
+                        if (event.motion.y < float(winH) - kBarHeight && event.motion.y > kTopBar) {
+                            paintAt(app, toVirtualX(event.motion.x) + app.editor.camX,
+                                    toVirtualY(event.motion.y) + app.editor.camY, true);
                         }
                     }
                 }
@@ -916,6 +937,7 @@ int main(int argc, char** argv) {
                 }
 
                 app.world->setViewport(viewW, viewH);
+                app.world->resetCamera();
                 constexpr float step = 1.0f / 120.0f;
                 int steps = 0;
                 while (accumulator >= step && steps < 8) {
@@ -946,6 +968,7 @@ int main(int argc, char** argv) {
             }
 
             // ---- draw
+            renderer.worldSpace();
             if (app.playing) {
                 const Camera cam = app.world->camera();
                 drawBackground(renderer, app.art, cam.x, viewW, viewH, app.level.theme);
@@ -953,7 +976,6 @@ int main(int argc, char** argv) {
                 drawEntities(renderer, app.content, app.world->entities(), app.art, cam.x, cam.y,
                              float(SDL_GetTicks()) / 1000.0f);
                 drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y);
-                drawPlayHud(renderer, *app.world, viewW, viewH, app.replayMode);
             } else {
                 drawBackground(renderer, app.art, app.editor.camX, viewW, viewH, app.level.theme);
                 drawLevel(renderer, app, app.art, app.editor.camX, app.editor.camY, viewW, viewH);
@@ -968,17 +990,32 @@ int main(int argc, char** argv) {
                 ghost.y = float(app.level.startTy) * pm::kTile + (pm::kTile - ghost.h);
                 drawPlayer(renderer, ghost, app.art, app.editor.camX, app.editor.camY);
 
-                std::optional<SDL_FRect> cursor;
-                const float wx = mouseX + app.editor.camX;
-                const float wy = mouseY + app.editor.camY;
-                const int tx = static_cast<int>(std::floor(wx / pm::kTile));
-                const int ty = static_cast<int>(std::floor(wy / pm::kTile));
-                if (mouseY > kTopBar && mouseY < float(viewH) - kBarHeight) {
-                    cursor = SDL_FRect{float(tx * pm::kTile) - app.editor.camX,
+                // cursor in world space
+                const float vmx = toVirtualX(mouseX);
+                const float vmy = toVirtualY(mouseY);
+                const int tx = static_cast<int>(std::floor((vmx + app.editor.camX) / pm::kTile));
+                const int ty = static_cast<int>(std::floor((vmy + app.editor.camY) / pm::kTile));
+                if (mouseY > kTopBar && mouseY < float(winH) - kBarHeight) {
+                    renderer.frameRect(float(tx * pm::kTile) - app.editor.camX,
                                        float(ty * pm::kTile) - app.editor.camY,
-                                       float(pm::kTile), float(pm::kTile)};
+                                       float(pm::kTile), float(pm::kTile), accent, 2.0f);
                 }
-                drawEditorUi(renderer, app, app.art, viewW, viewH, cursor);
+            }
+
+            renderer.screenSpace();
+            // letterbox bars
+            if (padX > 0.0f) {
+                renderer.fillRect(0.0f, 0.0f, padX, float(winH), Color{0, 0, 0, 255});
+                renderer.fillRect(float(winW) - padX, 0.0f, padX, float(winH), Color{0, 0, 0, 255});
+            }
+            if (padY > 0.0f) {
+                renderer.fillRect(0.0f, 0.0f, float(winW), padY, Color{0, 0, 0, 255});
+                renderer.fillRect(0.0f, float(winH) - padY, float(winW), padY, Color{0, 0, 0, 255});
+            }
+            if (app.playing) {
+                drawPlayHud(renderer, *app.world, winW, winH, app.replayMode);
+            } else {
+                drawEditorUi(renderer, app, app.art, winW, winH, std::nullopt);
             }
 
             if (!opts.shotPath.empty() && !shotSaved) {
@@ -991,8 +1028,11 @@ int main(int argc, char** argv) {
             renderer.endFrame();
         }
 
-        app.art.destroy(renderer);
-        renderer.shutdown();
+        // SDL3/SDL_ttf teardown trips the Windows heap checker at exit on this
+        // machine; the process is ending anyway, so skip the CRT exit path.
+        std::fflush(stdout);
+        std::fflush(stderr);
+        std::_Exit(0);
     } catch (const std::exception& e) {
         std::fprintf(stderr, "fatal: %s\n", e.what());
         return 1;

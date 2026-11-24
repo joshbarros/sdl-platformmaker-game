@@ -31,6 +31,10 @@ World::World(Level level, const Content& content)
     restart();
 }
 
+void World::resetCamera() {
+    updateCamera();
+}
+
 void World::setViewport(int width, int height) {
     viewW_ = std::max(320, width);
     viewH_ = std::max(240, height);
