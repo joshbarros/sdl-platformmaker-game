@@ -1,0 +1,12 @@
+# CMake generation dependency list for this directory.
+D:/dev/cardrogue/build/_deps/sdl3_ttf-src/external/freetype/CMakeLists.txt
+D:/dev/sdl-platformmaker-game/build-test/CMakeFiles/cmake.verify_globs
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CMakeDependentOption.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CPack.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CPackComponent.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CheckIncludeFile.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPackageHandleStandardArgs.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPackageMessage.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPkgConfig.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/GNUInstallDirs.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Templates/CPackConfig.cmake.in

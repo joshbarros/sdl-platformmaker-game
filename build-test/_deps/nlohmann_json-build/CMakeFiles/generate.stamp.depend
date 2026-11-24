@@ -1,0 +1,11 @@
+# CMake generation dependency list for this directory.
+D:/dev/cardrogue/build/_deps/nlohmann_json-src/CMakeLists.txt
+D:/dev/cardrogue/build/_deps/nlohmann_json-src/cmake/config.cmake.in
+D:/dev/cardrogue/build/_deps/nlohmann_json-src/cmake/nlohmann_jsonConfigVersion.cmake.in
+D:/dev/cardrogue/build/_deps/nlohmann_json-src/cmake/pkg-config.pc.in
+D:/dev/sdl-platformmaker-game/build-test/CMakeFiles/cmake.verify_globs
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CMakePackageConfigHelpers.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/ExternalProject.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/ExternalProject/shared_internal_commands.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/GNUInstallDirs.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/WriteBasicConfigVersionFile.cmake

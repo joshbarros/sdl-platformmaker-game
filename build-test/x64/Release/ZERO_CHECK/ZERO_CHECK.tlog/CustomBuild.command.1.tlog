@@ -1,0 +1,10 @@
+^D:\DEV\SDL-PLATFORMMAKER-GAME\BUILD-TEST\CMAKEFILES\C8BDC0898D3B38827F9AC3F367BD7582\GENERATE.STAMP.RULE
+setlocal
+D:\tools\cmake-4.5.1-windows-x86_64\bin\cmake.exe -SD:/dev/sdl-platformmaker-game -BD:/dev/sdl-platformmaker-game/build-test --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/dev/sdl-platformmaker-game/build-test/platformmaker.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

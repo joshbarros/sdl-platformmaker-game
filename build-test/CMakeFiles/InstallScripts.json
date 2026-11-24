@@ -1,0 +1,14 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/dev/sdl-platformmaker-game/build-test/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3-build/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/external/harfbuzz/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/external/freetype/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/external/plutovg/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/external/plutosvg/cmake_install.cmake",
+		"D:/dev/sdl-platformmaker-game/build-test/_deps/nlohmann_json-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

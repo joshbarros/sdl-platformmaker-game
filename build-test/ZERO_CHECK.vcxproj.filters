@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\c8bdc0898d3b38827f9ac3f367bd7582\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{86180007-B54F-302B-A9EC-6CDF226BCF0A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

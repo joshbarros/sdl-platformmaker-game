@@ -1,0 +1,12 @@
+# CMake generation dependency list for this directory.
+D:/dev/cardrogue/build/_deps/sdl3_ttf-src/external/harfbuzz/CMakeLists.txt
+D:/dev/sdl-platformmaker-game/build-test/CMakeFiles/cmake.verify_globs
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CheckFunctionExists.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CheckIncludeFile.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/CheckIncludeFiles.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPackageHandleStandardArgs.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPackageMessage.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPython/Support.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/FindPython3.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/GNUInstallDirs.cmake
+D:/tools/cmake-4.5.1-windows-x86_64/share/cmake-4.5/Modules/Internal/CheckCommon.cmake

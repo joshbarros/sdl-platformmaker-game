@@ -15,6 +15,8 @@
 
 #include "level.hpp"
 #include "renderer.hpp"
+#include "daily.hpp"
+#include "profile.hpp"
 #include "replay.hpp"
 #include "share.hpp"
 #include "world.hpp"
@@ -49,6 +51,7 @@ struct Options {
     std::string replayPath;
     bool play = false;
     bool selftest = false;
+    bool daily = false;
     float autoSeconds = 0.0f;
 };
 
@@ -94,6 +97,15 @@ struct App {
     std::unique_ptr<pm::ReplayPlayer> replay;
     bool replayMode = false;
     bool replayDone = false;
+
+    pm::Profile profile;
+    std::vector<std::string> toasts;
+    float toastTimer = 0.0f;
+    bool dailyMode = false;
+    bool dailyRecorded = false;
+    int lastCoins = 0;
+    int lastDeaths = 0;
+    int lastKills = 0;
 };
 
 Color themeSky(const std::string& theme) {
@@ -528,6 +540,9 @@ Options parseArgs(int argc, char** argv) {
             opts.fromShare = argv[++i];
         } else if (arg == "--replay" && i + 1 < argc) {
             opts.replayPath = argv[++i];
+        } else if (arg == "--daily") {
+            opts.daily = true;
+            opts.play = true;
         } else if (arg == "--selftest") {
             opts.selftest = true;
         } else if (arg == "--auto" && i + 1 < argc) {
@@ -535,6 +550,18 @@ Options parseArgs(int argc, char** argv) {
         }
     }
     return opts;
+}
+
+std::filesystem::path profilePath() {
+    std::filesystem::path dir;
+    if (const char* pref = SDL_GetPrefPath("platformmaker", "profile")) {
+        dir = pref;
+        SDL_free(const_cast<char*>(pref));
+    } else {
+        dir = std::filesystem::temp_directory_path();
+    }
+    std::filesystem::create_directories(dir);
+    return dir / "profile.json";
 }
 
 std::filesystem::path replayPath() {
@@ -547,6 +574,54 @@ std::filesystem::path replayPath() {
     }
     std::filesystem::create_directories(dir);
     return dir / "last.replay.json";
+}
+
+void pushToasts(App& app, const std::vector<std::string>& unlocked) {
+    for (const auto& name : unlocked) app.toasts.push_back(name);
+    if (!app.toasts.empty()) app.toastTimer = 3.0f;
+}
+
+// Reads the live world and folds its numbers into the persistent profile.
+// Called every frame; cheap because it only reacts to deltas.
+void syncProgress(App& app) {
+    if (!app.world) return;
+    const World& w = *app.world;
+
+    if (w.coins() != app.lastCoins) {
+        app.profile.bump("coins", w.coins() - app.lastCoins);
+        app.lastCoins = w.coins();
+    }
+    if (w.deaths() != app.lastDeaths) {
+        app.profile.bump("deaths", w.deaths() - app.lastDeaths);
+        app.lastDeaths = w.deaths();
+    }
+    if (w.kills() != app.lastKills) {
+        app.profile.bump("stomps", w.kills() - app.lastKills);
+        app.lastKills = w.kills();
+    }
+
+    if (w.finished() && !app.dailyRecorded) {
+        app.dailyRecorded = true;
+        app.profile.bump("clears", 1);
+        if (w.deaths() == 0) app.profile.bump("flawless", 1);
+        if (w.elapsed() < 45.0f) app.profile.bump("fast_clears", 1);
+
+        if (app.dailyMode) {
+            const std::string today = pm::todayKey();
+            const int gap = pm::daysBetween(app.profile.dailyDate, today);
+            if (app.profile.dailyDate != today) {
+                app.profile.dailyStreak = (gap == 1) ? app.profile.dailyStreak + 1 : 1;
+                app.profile.dailyDate = today;
+                app.profile.dailyBest = w.elapsed();
+            } else if (app.profile.dailyBest <= 0.0f || w.elapsed() < app.profile.dailyBest) {
+                app.profile.dailyBest = w.elapsed();
+            }
+            app.profile.counters["daily_streak"] = app.profile.dailyStreak;
+        }
+        app.profile.save(profilePath().string());
+    }
+
+    pushToasts(app, pm::evaluateAchievements(app.profile));
 }
 
 void setStatus(App& app, const std::string& text) {
@@ -598,6 +673,7 @@ void paintAt(App& app, float worldX, float worldY, bool erase) {
         app.level.dirty = true;
     } else {
         app.level.set(tx, ty, app.editor.brush);
+        app.profile.bump("tiles_painted", 1);
     }
 }
 
@@ -611,6 +687,7 @@ int main(int argc, char** argv) {
     try {
         app.assetDir = findAssetDir();
         app.content = Content::load(app.assetDir);
+        app.profile = pm::Profile::load(profilePath().string());
 
         std::string levelPath = app.assetDir + "levels/1-1.lvl.json";
         if (!opts.levelPath.empty()) levelPath = opts.levelPath;
@@ -739,6 +816,11 @@ int main(int argc, char** argv) {
         app.editor.camX = 0.0f;
         app.editor.camY = 0.0f;
 
+        if (opts.daily) {
+            app.level = pm::makeDailyLevel(app.content, pm::todayKey());
+            app.dailyMode = true;
+        }
+
         if (opts.replayPath.empty() && opts.play) {
             app.world = std::make_unique<World>(app.level, app.content);
             app.playing = true;
@@ -771,6 +853,10 @@ int main(int argc, char** argv) {
             app.replayDone = false;
             app.replay.reset();
             app.recorder.reset(pm::encodeLevelCode(app.level, app.content));
+            app.lastCoins = 0;
+            app.lastDeaths = 0;
+            app.lastKills = 0;
+            app.dailyRecorded = false;
             accumulator = 0.0f;
         };
 
@@ -859,6 +945,8 @@ int main(int argc, char** argv) {
                         if (ctrl && key == SDLK_C) {
                             const std::string code = pm::encodeLevelCode(app.level, app.content);
                             SDL_SetClipboardText(code.c_str());
+                            app.profile.bump("shares", 1);
+                            app.profile.save(profilePath().string());
                             setStatus(app, "code copied (" + std::to_string(code.size()) +
                                                " chars) - paste it in the caption");
                         } else if (ctrl && key == SDLK_V) {
@@ -888,6 +976,11 @@ int main(int argc, char** argv) {
                             app.editor.entityMode = true;
                             const int count = static_cast<int>(app.content.entityOrder.size());
                             app.editor.entityIndex = (app.editor.entityIndex + 1) % count;
+                        } else if (key == SDLK_D) {
+                            app.level = pm::makeDailyLevel(app.content, pm::todayKey());
+                            app.dailyMode = true;
+                            setStatus(app, "daily " + pm::todayKey() + " - streak " +
+                                               std::to_string(app.profile.dailyStreak));
                         } else if (key == SDLK_F5) {
                             const auto path = userLevelPath();
                             setStatus(app, pm::saveLevel(path.string(), app.level, app.content)
@@ -987,6 +1080,7 @@ int main(int argc, char** argv) {
                         app.recorder.step(stepInput);
                     }
                     app.world->update(step, stepInput);
+                    syncProgress(app);
                     accumulator -= step;
                     ++steps;
                     input.jumpPressed = false;
@@ -1077,6 +1171,22 @@ int main(int argc, char** argv) {
                 drawEditorUi(renderer, app, app.art, winW, winH, std::nullopt);
             }
 
+            if (!app.toasts.empty()) {
+                app.toastTimer -= frameDt;
+                if (app.toastTimer <= 0.0f) {
+                    app.toasts.erase(app.toasts.begin());
+                    if (!app.toasts.empty()) app.toastTimer = 3.0f;
+                }
+                if (!app.toasts.empty()) {
+                    const std::string title = "ACHIEVEMENT  " + app.toasts.front();
+                    const float tw = renderer.textWidth(title, 16) + 40.0f;
+                    const float tx = (float(winW) - tw) * 0.5f;
+                    renderer.fillRect(tx, 64.0f, tw, 38.0f, Color{0x14, 0x10, 0x22, 230});
+                    renderer.frameRect(tx, 64.0f, tw, 38.0f, accent, 2.0f);
+                    renderer.text(title, float(winW) * 0.5f, 74.0f, 16, accent, Align::Center);
+                }
+            }
+
             if (!opts.shotPath.empty() && !shotSaved) {
                 // must read the backbuffer before it is presented
                 renderer.screenshot(opts.shotPath);
@@ -1089,6 +1199,7 @@ int main(int argc, char** argv) {
 
         // SDL3/SDL_ttf teardown trips the Windows heap checker at exit on this
         // machine; the process is ending anyway, so skip the CRT exit path.
+        app.profile.save(profilePath().string());
         std::fflush(stdout);
         std::fflush(stderr);
         std::_Exit(0);

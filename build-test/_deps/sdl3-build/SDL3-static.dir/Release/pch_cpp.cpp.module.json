@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "SDL3-static.dir\\Release\\pch_cpp.obj",
+            "outputs": [
+                "SDL3-static.dir\\Release\\"
+            ],
+            "requires": []
+        }
+    ]
+}

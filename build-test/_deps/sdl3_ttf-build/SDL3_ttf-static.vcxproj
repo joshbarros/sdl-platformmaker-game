@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B83DAD5B-3D59-37DD-9DE2-A6F99BFA68C2}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>SDL3_ttf-static</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SDL3_ttf-static.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SDL3_ttf-static</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">SDL3_ttf-static.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">SDL3_ttf-static</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">SDL3_ttf-static.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">SDL3_ttf-static</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">SDL3_ttf-static.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">SDL3_ttf-static</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level2</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;BUILD_SDL;SDL_BUILD_MAJOR_VERSION=3;SDL_BUILD_MINOR_VERSION=2;SDL_BUILD_MICRO_VERSION=2;TTF_USE_HARFBUZZ=1;TTF_USE_PLUTOSVG=1;PLUTOVG_BUILD_STATIC;PLUTOSVG_BUILD_STATIC;PLUTOSVG_HAS_FREETYPE;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\dev\cardrogue\build\_deps\sdl3_ttf-src\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\harfbuzz\src;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\freetype\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutovg\include;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\external\plutosvg\source;D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3-build\include-revision;D:\dev\cardrogue\build\_deps\sdl3-src\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/dev/cardrogue/build/_deps/sdl3_ttf-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\tools\cmake-4.5.1-windows-x86_64\bin\cmake.exe -SD:/dev/sdl-platformmaker-game -BD:/dev/sdl-platformmaker-game/build-test --check-stamp-file D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\GetGitRevisionDescription.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PkgConfigHelper.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PrivateSdlFunctions.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlcpu.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlmanpages.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlplatform.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\4.5.1\CMakeCCompiler.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\cmake.verify_globs;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeDependentOption.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePackageConfigHelpers.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeParseArguments.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePushCheckState.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCCompilerFlag.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCSourceCompiles.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckSymbolExists.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\GNUInstallDirs.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\WriteBasicConfigVersionFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/dev/cardrogue/build/_deps/sdl3_ttf-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\tools\cmake-4.5.1-windows-x86_64\bin\cmake.exe -SD:/dev/sdl-platformmaker-game -BD:/dev/sdl-platformmaker-game/build-test --check-stamp-file D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\GetGitRevisionDescription.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PkgConfigHelper.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PrivateSdlFunctions.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlcpu.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlmanpages.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlplatform.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\4.5.1\CMakeCCompiler.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\cmake.verify_globs;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeDependentOption.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePackageConfigHelpers.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeParseArguments.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePushCheckState.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCCompilerFlag.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCSourceCompiles.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckSymbolExists.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\GNUInstallDirs.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\WriteBasicConfigVersionFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/dev/cardrogue/build/_deps/sdl3_ttf-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\tools\cmake-4.5.1-windows-x86_64\bin\cmake.exe -SD:/dev/sdl-platformmaker-game -BD:/dev/sdl-platformmaker-game/build-test --check-stamp-file D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\GetGitRevisionDescription.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PkgConfigHelper.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PrivateSdlFunctions.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlcpu.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlmanpages.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlplatform.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\4.5.1\CMakeCCompiler.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\cmake.verify_globs;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeDependentOption.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePackageConfigHelpers.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeParseArguments.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePushCheckState.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCCompilerFlag.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCSourceCompiles.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckSymbolExists.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\GNUInstallDirs.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\WriteBasicConfigVersionFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/dev/cardrogue/build/_deps/sdl3_ttf-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\tools\cmake-4.5.1-windows-x86_64\bin\cmake.exe -SD:/dev/sdl-platformmaker-game -BD:/dev/sdl-platformmaker-game/build-test --check-stamp-file D:/dev/sdl-platformmaker-game/build-test/_deps/sdl3_ttf-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\GetGitRevisionDescription.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PkgConfigHelper.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\PrivateSdlFunctions.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlcpu.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlmanpages.cmake;D:\dev\cardrogue\build\_deps\sdl3_ttf-src\cmake\sdlplatform.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\4.5.1\CMakeCCompiler.cmake;D:\dev\sdl-platformmaker-game\build-test\CMakeFiles\cmake.verify_globs;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeCommonLanguageInclude.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeDependentOption.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeLanguageInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePackageConfigHelpers.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakeParseArguments.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CMakePushCheckState.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCCompilerFlag.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckCSourceCompiles.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\CheckSymbolExists.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\CMakeCommonCompilerMacros.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Compiler\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\GNUInstallDirs.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Internal\CMakeCommonLinkerInformation.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Linker\MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Linker\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC-C.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\Platform\Windows-MSVC.cmake;D:\tools\cmake-4.5.1-windows-x86_64\share\cmake-4.5\Modules\WriteBasicConfigVersionFile.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_hashtable.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_hashtable_ttf.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_gpu_textengine.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_renderer_textengine.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_surface_textengine.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="D:\dev\cardrogue\build\_deps\sdl3_ttf-src\src\SDL_ttf.c">
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</ScanSourceForModuleDependencies>
+      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\harfbuzz\harfbuzz.dir\$(Configuration)\harfbuzz.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\autofit.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftbase.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftbbox.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftbdf.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftbitmap.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftcid.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftfstype.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftgasp.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftglyph.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftgxval.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftinit.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftmm.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftotval.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftpatent.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftpfr.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftstroke.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftsynth.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\fttype1.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftwinfnt.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\bdf.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftbzip2.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftcache.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\cff.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\type1cid.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftgzip.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftlzw.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\pcf.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\pfr.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\psaux.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\pshinter.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\psnames.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\raster.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\sdf.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\sfnt.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\smooth.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\svg.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\truetype.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\type1.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\type42.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\winfnt.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftsystem.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftdebug.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\freetype\freetype.dir\$(Configuration)\ftver.res" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutosvg\plutosvg.dir\$(Configuration)\plutosvg.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-blend.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-canvas.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-font.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-matrix.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-paint.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-path.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-rasterize.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-surface.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-ft-math.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-ft-raster.obj" />
+    <Object Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.dir\$(Configuration)\plutovg-ft-stroker.obj" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="D:\dev\sdl-platformmaker-game\build-test\ZERO_CHECK.vcxproj">
+      <Project>{BCF914F3-9230-3C28-8238-B74F2C0CF01B}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\harfbuzz\harfbuzz.vcxproj">
+      <Project>{C955BD58-B0A1-3299-908D-42B3A68C5EE3}</Project>
+      <Name>harfbuzz</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutosvg\plutosvg.vcxproj">
+      <Project>{1E8DA311-0C61-354D-AF18-F72692FD37C5}</Project>
+      <Name>plutosvg</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\dev\sdl-platformmaker-game\build-test\_deps\sdl3_ttf-build\external\plutovg\plutovg.vcxproj">
+      <Project>{B05E21F8-9A0A-3C21-982E-E379E65B1B8B}</Project>
+      <Name>plutovg</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

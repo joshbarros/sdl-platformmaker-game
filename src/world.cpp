@@ -58,6 +58,7 @@ void World::restart() {
     player_.respawnY = player_.y;
 
     coins_ = 0;
+    kills_ = 0;
     deaths_ = 0;
     finished_ = false;
     elapsed_ = 0.0f;
@@ -333,6 +334,7 @@ void World::checkEntityTouches() {
             const bool stomping = player_.vy > 0.0f && playerBottom < e.y + 18.0f;
             if (stomping) {
                 e.alive = false;
+                ++kills_;
                 player_.vy = kStompBounce;
                 spawnParticles(e.x + 16.0f, e.y + 20.0f, 10, Color{0x9a, 0xb8, 0x6a, 230},
                                180.0f);

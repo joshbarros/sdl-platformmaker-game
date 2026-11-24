@@ -56,6 +56,7 @@ public:
     const std::vector<Particle>& particles() const { return particles_; }
     int coins() const { return coins_; }
     int deaths() const { return deaths_; }
+    int kills() const { return kills_; }
     bool finished() const { return finished_; }
     float elapsed() const { return elapsed_; }
     std::vector<Entity>& entities() { return level_.entities; }
@@ -81,6 +82,7 @@ private:
     int viewW_ = 1280;
     int viewH_ = 800;
     int coins_ = 0;
+    int kills_ = 0;
     int deaths_ = 0;
     bool finished_ = false;
     float elapsed_ = 0.0f;
