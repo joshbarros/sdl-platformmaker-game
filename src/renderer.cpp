@@ -80,6 +80,16 @@ void Renderer::drawTextureRotated(const Texture& texture, float x, float y, floa
                              flipH ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
 }
 
+void Renderer::drawTextureTinted(const Texture& texture, const SDL_FRect& src,
+                                 const SDL_FRect& dst, Color tint) {
+    if (!texture.handle) return;
+    SDL_SetTextureColorMod(texture.handle, tint.r, tint.g, tint.b);
+    SDL_SetTextureAlphaMod(texture.handle, tint.a);
+    SDL_RenderTexture(renderer_, texture.handle, &src, &dst);
+    SDL_SetTextureColorMod(texture.handle, 255, 255, 255);
+    SDL_SetTextureAlphaMod(texture.handle, 255);
+}
+
 void Renderer::destroyTexture(Texture& texture) {
     if (texture.handle) SDL_DestroyTexture(texture.handle);
     texture = Texture{};

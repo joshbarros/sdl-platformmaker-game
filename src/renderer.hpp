@@ -59,6 +59,8 @@ public:
                      bool flipH = false);
     void drawTextureRotated(const Texture& texture, float x, float y, float w, float h,
                             bool flipH, double angleDegrees);
+    void drawTextureTinted(const Texture& texture, const SDL_FRect& src, const SDL_FRect& dst,
+                           Color tint);
 
     SDL_Window* window() const { return window_; }
 

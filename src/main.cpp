@@ -125,12 +125,15 @@ void drawTile(pm::Renderer& r, const TileDef& tile, float x, float y, float size
             src.y += cut;
             src.h -= cut;
         }
-        r.drawTexture(art.tileGround, src, SDL_FRect{x, y, size, size});
+        // pulled back a touch so the characters stay the brightest thing on screen
+        r.drawTextureTinted(art.tileGround, src, SDL_FRect{x, y, size, size},
+                            Color{0xe6, 0xdc, 0xd2, 255});
         return;
     }
 
     if (tile.name == "brick" && art.tileBrick.valid()) {
-        r.drawTexture(art.tileBrick, art.tileBrick.src, SDL_FRect{x, y, size, size});
+        r.drawTextureTinted(art.tileBrick, art.tileBrick.src, SDL_FRect{x, y, size, size},
+                            Color{0xe6, 0xdc, 0xd2, 255});
         return;
     }
 
@@ -188,8 +191,12 @@ void drawBackground(pm::Renderer& r, const Art& art, float camX, int viewW, int 
         // only sky and hills: the painted grass band would fight the real ground
         const SDL_FRect src{0.0f, 0.0f, float(art.background.w), float(art.background.h) * 0.72f};
         for (float x = offset; x < float(viewW); x += width) {
-            r.drawTexture(art.background, src, SDL_FRect{x, 0.0f, width, height});
+            r.drawTextureTinted(art.background, src, SDL_FRect{x, 0.0f, width, height},
+                                Color{0xb4, 0xc2, 0xe8, 255});
         }
+        // atmospheric perspective: wash the distance toward the sky colour so the
+        // playfield keeps all the contrast
+        r.fillRect(0.0f, 0.0f, float(viewW), float(viewH), Color{0x6a, 0x86, 0xc8, 86});
         return;
     }
 
@@ -1031,6 +1038,14 @@ int main(int argc, char** argv) {
             }
 
             renderer.screenSpace();
+            // soft vignette: keeps the eye in the middle of the frame
+            for (int i = 0; i < 26; ++i) {
+                const Uint8 alpha = Uint8(60 - i * 2);
+                renderer.fillRect(float(i), 0.0f, 1.0f, float(winH), Color{0x08, 0x04, 0x10, alpha});
+                renderer.fillRect(float(winW - i - 1), 0.0f, 1.0f, float(winH),
+                                  Color{0x08, 0x04, 0x10, alpha});
+            }
+
             // letterbox bars
             if (padX > 0.0f) {
                 renderer.fillRect(0.0f, 0.0f, padX, float(winH), Color{0, 0, 0, 255});
