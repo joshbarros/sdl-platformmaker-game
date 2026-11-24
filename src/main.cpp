@@ -36,7 +36,7 @@ using namespace pm::palette;
 
 constexpr int kWindowW = 1280;
 constexpr int kWindowH = 800;
-constexpr int kViewW = 480;
+constexpr int kViewW = 640;
 constexpr int kViewH = 360;
 constexpr float kBarHeight = 86.0f;
 constexpr float kTopBar = 44.0f;
@@ -293,15 +293,42 @@ void drawEntities(pm::Renderer& r, const Content& content, const std::vector<Ent
     }
 }
 
-void drawPlayer(pm::Renderer& r, const Player& p, const Art& art, float camX, float camY) {
+void drawPlayer(pm::Renderer& r, const Player& p, const Art& art, float camX, float camY,
+                float time) {
     const float x = p.x - camX;
     const float y = p.y - camY;
 
+    // contact shadow so the character reads as standing on the ground
+    if (p.onGround) {
+        for (int i = 0; i < 5; ++i) {
+            const float t = float(i) / 4.0f;
+            const float w = 22.0f * (1.0f - t * 0.35f);
+            r.fillRect(x + p.w * 0.5f - w * 0.5f, y + p.h - 1.0f + t, w, 1.0f,
+                       Color{0x1a, 0x10, 0x08, Uint8(110 - i * 18)});
+        }
+    }
+
     if (art.hero.valid()) {
-        const float spriteW = 42.0f;
-        const float spriteH = 58.0f;
-        r.drawTexture(art.hero, x + p.w * 0.5f - spriteW * 0.5f, y + p.h - spriteH + 2.0f,
-                      spriteW, spriteH, !p.facingRight);
+        float spriteW = 42.0f;
+        float spriteH = 58.0f;
+        float bob = 0.0f;
+        float angle = 0.0f;
+        const float speed = std::fabs(p.vx);
+
+        if (!p.onGround) {
+            spriteW *= 0.94f;
+            spriteH *= 1.06f;
+            angle = p.vy < 0.0f ? -5.0 : 5.0;
+        } else if (speed > 25.0f) {
+            bob = std::fabs(std::sin(time * 13.0f)) * 3.0f;
+            angle = std::sin(time * 13.0f) * 5.0f * (p.facingRight ? 1.0f : -1.0f);
+        } else {
+            spriteH *= 1.0f + std::sin(time * 2.6f) * 0.02f;
+        }
+
+        r.drawTextureRotated(art.hero, x + p.w * 0.5f - spriteW * 0.5f,
+                             y + p.h + 2.0f - spriteH - bob, spriteW, spriteH,
+                             !p.facingRight, angle);
         return;
     }
 
@@ -975,7 +1002,8 @@ int main(int argc, char** argv) {
                 drawLevel(renderer, app, app.art, cam.x, cam.y, viewW, viewH);
                 drawEntities(renderer, app.content, app.world->entities(), app.art, cam.x, cam.y,
                              float(SDL_GetTicks()) / 1000.0f);
-                drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y);
+                drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y,
+                           float(SDL_GetTicks()) / 1000.0f);
             } else {
                 drawBackground(renderer, app.art, app.editor.camX, viewW, viewH, app.level.theme);
                 drawLevel(renderer, app, app.art, app.editor.camX, app.editor.camY, viewW, viewH);
@@ -988,7 +1016,7 @@ int main(int argc, char** argv) {
                 ghost.x = float(app.level.startTx) * pm::kTile +
                           (pm::kTile - ghost.w) * 0.5f;
                 ghost.y = float(app.level.startTy) * pm::kTile + (pm::kTile - ghost.h);
-                drawPlayer(renderer, ghost, app.art, app.editor.camX, app.editor.camY);
+                drawPlayer(renderer, ghost, app.art, app.editor.camX, app.editor.camY, 0.0f);
 
                 // cursor in world space
                 const float vmx = toVirtualX(mouseX);

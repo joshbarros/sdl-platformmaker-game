@@ -57,6 +57,8 @@ public:
                      bool flipH = false);
     void drawTexture(const Texture& texture, float x, float y, float w, float h,
                      bool flipH = false);
+    void drawTextureRotated(const Texture& texture, float x, float y, float w, float h,
+                            bool flipH, double angleDegrees);
 
     SDL_Window* window() const { return window_; }
 

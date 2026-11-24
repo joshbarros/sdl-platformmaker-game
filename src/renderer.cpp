@@ -71,6 +71,15 @@ Texture Renderer::loadTexture(const std::string& path) {
     return texture;
 }
 
+void Renderer::drawTextureRotated(const Texture& texture, float x, float y, float w, float h,
+                                  bool flipH, double angleDegrees) {
+    if (!texture.handle) return;
+    const SDL_FRect dst{x, y, w, h};
+    const SDL_FPoint center{w * 0.5f, h * 0.5f};
+    SDL_RenderTextureRotated(renderer_, texture.handle, &texture.src, &dst, angleDegrees, &center,
+                             flipH ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+}
+
 void Renderer::destroyTexture(Texture& texture) {
     if (texture.handle) SDL_DestroyTexture(texture.handle);
     texture = Texture{};
@@ -145,13 +154,13 @@ void Renderer::shutdown() {
 bool Renderer::worldSpace() {
     int w = 0, h = 0;
     SDL_GetWindowSize(window_, &w, &h);
-    const float scale = std::max(1.0f, std::min(float(w) / 480.0f, float(h) / 360.0f));
+    const float scale = std::max(1.0f, std::min(float(w) / 640.0f, float(h) / 360.0f));
     // SDL multiplies the viewport rectangle by the render scale, so the
     // viewport is given in virtual units and the letterbox offset is divided
     // by the scale.
-    const float padX = (float(w) - 480.0f * scale) * 0.5f / scale;
+    const float padX = (float(w) - 640.0f * scale) * 0.5f / scale;
     const float padY = (float(h) - 360.0f * scale) * 0.5f / scale;
-    SDL_Rect viewport{int(padX), int(padY), 480, 360};
+    SDL_Rect viewport{int(padX), int(padY), 640, 360};
     SDL_SetRenderViewport(renderer_, &viewport);
     return SDL_SetRenderScale(renderer_, scale, scale);
 }
