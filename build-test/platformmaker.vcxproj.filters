@@ -22,6 +22,9 @@
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\daily.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D:\dev\sdl-platformmaker-game\src\gif.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

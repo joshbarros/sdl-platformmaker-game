@@ -431,6 +431,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\replay.cpp" />
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\profile.cpp" />
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\daily.cpp" />
+    <ClCompile Include="D:\dev\sdl-platformmaker-game\src\gif.cpp" />
     <ClCompile Include="D:\dev\sdl-platformmaker-game\src\renderer.cpp" />
     <Natvis Include="D:\dev\cardrogue\build\_deps\nlohmann_json-src\nlohmann_json.natvis">
     </Natvis>

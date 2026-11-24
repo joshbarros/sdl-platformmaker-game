@@ -59,6 +59,7 @@ add_executable(platformmaker
   src/replay.cpp
   src/profile.cpp
   src/daily.cpp
+  src/gif.cpp
   src/renderer.cpp)
 
 target_include_directories(platformmaker PRIVATE src third_party)

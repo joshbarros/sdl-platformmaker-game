@@ -16,6 +16,7 @@
 #include "level.hpp"
 #include "renderer.hpp"
 #include "daily.hpp"
+#include "gif.hpp"
 #include "profile.hpp"
 #include "replay.hpp"
 #include "share.hpp"
@@ -52,6 +53,8 @@ struct Options {
     bool play = false;
     bool selftest = false;
     bool daily = false;
+    std::string clipPath;
+    int clipSeconds = 4;
     float autoSeconds = 0.0f;
 };
 
@@ -540,6 +543,8 @@ Options parseArgs(int argc, char** argv) {
             opts.fromShare = argv[++i];
         } else if (arg == "--replay" && i + 1 < argc) {
             opts.replayPath = argv[++i];
+        } else if (arg == "--clip" && i + 1 < argc) {
+            opts.clipPath = argv[++i];
         } else if (arg == "--daily") {
             opts.daily = true;
             opts.play = true;
@@ -839,6 +844,69 @@ int main(int argc, char** argv) {
                     app.world->update(1.0f / 120.0f, in);
                 }
             }
+        }
+
+        // ---- clip export: deterministic run rendered into a GIF
+        if (!opts.clipPath.empty() && app.world) {
+            const int outW = 640;
+            const int outH = 400;
+            pm::GifWriter gif;
+            if (!gif.begin(opts.clipPath, outW, outH, 1000 / 12)) {
+                std::fprintf(stderr, "clip: cannot open %s\n", opts.clipPath.c_str());
+                return 4;
+            }
+            std::vector<std::uint8_t> rgba;
+            std::vector<std::uint8_t> small(std::size_t(outW) * outH * 4);
+
+            app.world->setViewport(640, 360);
+            app.world->resetCamera();
+
+            const int frames = opts.clipSeconds * 12;
+            for (int f = 0; f < frames; ++f) {
+                for (int s = 0; s < 10; ++s) {
+                    InputState in;
+                    in.right = true;
+                    in.run = true;
+                    in.jump = ((f * 10 + s) % 42) < 12;
+                    in.jumpPressed = ((f * 10 + s) % 42) == 0;
+                    app.world->update(1.0f / 120.0f, in);
+                }
+                syncProgress(app);
+
+                int w = kWindowW, h = kWindowH;
+                SDL_GetWindowSize(renderer.window(), &w, &h);
+                const Camera cam = app.world->camera();
+                renderer.worldSpace();
+                drawBackground(renderer, app.art, cam.x, 640, 360, app.level.theme);
+                drawLevel(renderer, app, app.art, cam.x, cam.y, 640, 360);
+                drawEntities(renderer, app.content, app.world->entities(), app.art, cam.x, cam.y,
+                             float(f) * 0.083f);
+                drawPlayer(renderer, app.world->player(), app.art, cam.x, cam.y,
+                           float(f) * 0.083f);
+                renderer.screenSpace();
+                drawPlayHud(renderer, *app.world, w, h, app.replayMode);
+
+                SDL_Surface* surf = SDL_RenderReadPixels(renderer.sdl(), nullptr);
+                if (!surf) break;
+                rgba.resize(std::size_t(w) * h * 4);
+                SDL_ConvertPixels(w, h, surf->format, surf->pixels, surf->pitch,
+                                  SDL_PIXELFORMAT_RGBA32, rgba.data(), w * 4);
+                SDL_DestroySurface(surf);
+
+                for (int y = 0; y < outH; ++y) {
+                    for (int x = 0; x < outW; ++x) {
+                        const std::size_t src = (std::size_t(y * 2) * w + x * 2) * 4;
+                        const std::size_t dst = (std::size_t(y) * outW + x) * 4;
+                        std::memcpy(small.data() + dst, rgba.data() + src, 4);
+                    }
+                }
+                gif.addFrame(small.data());
+            }
+            gif.end();
+            std::printf("clip: %s (%d frames)\n", opts.clipPath.c_str(), frames);
+            app.profile.save(profilePath().string());
+            std::fflush(stdout);
+            return 0;
         }
 
         bool running = true;
