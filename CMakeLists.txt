@@ -55,6 +55,8 @@ add_executable(platformmaker
   src/main.cpp
   src/level.cpp
   src/world.cpp
+  src/share.cpp
+  src/replay.cpp
   src/renderer.cpp)
 
 target_include_directories(platformmaker PRIVATE src)

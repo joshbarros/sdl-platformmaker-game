@@ -15,6 +15,8 @@
 
 #include "level.hpp"
 #include "renderer.hpp"
+#include "replay.hpp"
+#include "share.hpp"
 #include "world.hpp"
 
 namespace {
@@ -39,6 +41,9 @@ constexpr float kTopBar = 44.0f;
 struct Options {
     std::string shotPath;
     std::string levelPath;
+    std::string shareOut;
+    std::string fromShare;
+    std::string replayPath;
     bool play = false;
     bool selftest = false;
     float autoSeconds = 0.0f;
@@ -61,7 +66,12 @@ struct App {
     std::string assetDir;
     std::string levelPath;
     bool playing = false;
+
     EditorState editor;
+    pm::ReplayRecorder recorder;
+    std::unique_ptr<pm::ReplayPlayer> replay;
+    bool replayMode = false;
+    bool replayDone = false;
 };
 
 Color themeSky(const std::string& theme) {
@@ -245,11 +255,16 @@ void drawEditorGrid(pm::Renderer& r, const Level& level, float camX, float camY,
     }
 }
 
-void drawPlayHud(pm::Renderer& r, const World& world, int viewW, int viewH) {
+void drawPlayHud(pm::Renderer& r, const World& world, int viewW, int viewH, bool replayMode) {
     r.fillRect(0, 0, float(viewW), 52.0f, withAlpha(Color{0x10, 0x0d, 0x18, 255}, 170));
 
     r.filledCircle(30.0f, 26.0f, 9.0f, Color{0xf2, 0xc9, 0x4c, 255});
     r.text(std::to_string(world.coins()), 44.0f, 15.0f, 18, white);
+
+    if (replayMode) {
+        r.fillRect(300.0f, 12.0f, 96.0f, 28.0f, Color{0x8e, 0x2d, 0x3d, 255});
+        r.text("REPLAY", 348.0f, 18.0f, 14, white, Align::Center);
+    }
 
     r.text("deaths " + std::to_string(world.deaths()), 130.0f, 15.0f, 18,
            Color{0xd8, 0xd2, 0xe8, 255});
@@ -384,6 +399,12 @@ Options parseArgs(int argc, char** argv) {
             opts.levelPath = argv[++i];
         } else if (arg == "--play") {
             opts.play = true;
+        } else if (arg == "--share") {
+            opts.shareOut = "1";
+        } else if (arg == "--from-share" && i + 1 < argc) {
+            opts.fromShare = argv[++i];
+        } else if (arg == "--replay" && i + 1 < argc) {
+            opts.replayPath = argv[++i];
         } else if (arg == "--selftest") {
             opts.selftest = true;
         } else if (arg == "--auto" && i + 1 < argc) {
@@ -391,6 +412,18 @@ Options parseArgs(int argc, char** argv) {
         }
     }
     return opts;
+}
+
+std::filesystem::path replayPath() {
+    std::filesystem::path dir;
+    if (const char* pref = SDL_GetPrefPath("platformmaker", "replays")) {
+        dir = pref;
+        SDL_free(const_cast<char*>(pref));
+    } else {
+        dir = std::filesystem::temp_directory_path();
+    }
+    std::filesystem::create_directories(dir);
+    return dir / "last.replay.json";
 }
 
 void setStatus(App& app, const std::string& text) {
@@ -458,8 +491,25 @@ int main(int argc, char** argv) {
 
         std::string levelPath = app.assetDir + "levels/1-1.lvl.json";
         if (!opts.levelPath.empty()) levelPath = opts.levelPath;
-        app.level = pm::loadLevel(levelPath, app.content);
+
+        if (!opts.fromShare.empty()) {
+            const std::string err = pm::decodeLevelCode(opts.fromShare, app.content, app.level);
+            if (!err.empty()) {
+                std::fprintf(stderr, "share code: %s\n", err.c_str());
+                return 2;
+            }
+            levelPath = "share:" + opts.fromShare.substr(0, 12);
+        } else {
+            app.level = pm::loadLevel(levelPath, app.content);
+        }
         app.levelPath = levelPath;
+
+        if (!opts.shareOut.empty()) {
+            const std::string code = pm::encodeLevelCode(app.level, app.content);
+            std::printf("%s\n", code.c_str());
+            std::printf("length: %zu chars\n", code.size());
+            return 0;
+        }
 
         // Round-trip check of the level format: save what we loaded, load it
         // again and compare. This is the CI smoke test for UGC safety.
@@ -468,17 +518,73 @@ int main(int argc, char** argv) {
                 std::filesystem::temp_directory_path() / "platformmaker-selftest.lvl.json";
             const bool saved = pm::saveLevel(tmp.string(), app.level, app.content);
             Level roundTrip = pm::loadLevel(tmp.string(), app.content);
-            const bool same = saved && roundTrip.w == app.level.w &&
+
+            const std::string code = pm::encodeLevelCode(app.level, app.content);
+            Level fromCode;
+            const std::string codeErr = pm::decodeLevelCode(code, app.content, fromCode);
+            const bool codeSame = codeErr.empty() && fromCode.w == app.level.w &&
+                                  fromCode.h == app.level.h &&
+                                  fromCode.tiles == app.level.tiles &&
+                                  fromCode.entities.size() == app.level.entities.size() &&
+                                  fromCode.startTx == app.level.startTx &&
+                                  fromCode.startTy == app.level.startTy;
+
+            // Deterministic replay: record a scripted run, encode/decode it and
+            // replay it into a fresh world. Positions must match exactly.
+            World runA(app.level, app.content);
+            pm::ReplayRecorder recorder;
+            recorder.reset(code);
+            for (int i = 0; i < 900; ++i) {
+                InputState in;
+                in.right = true;
+                in.jump = (i % 60) < 15;
+                in.jumpPressed = (i % 60) == 0;
+                recorder.step(in);
+                runA.update(1.0f / 120.0f, in);
+            }
+            pm::Replay decodedReplay;
+            const bool replayDecoded =
+                pm::decodeReplay(pm::encodeReplay(recorder.replay()), decodedReplay);
+            World runB(app.level, app.content);
+            pm::ReplayPlayer playback(decodedReplay);
+            for (int i = 0; i < decodedReplay.steps; ++i) {
+                runB.update(1.0f / 120.0f, playback.next());
+            }
+            const bool deterministic =
+                replayDecoded && std::abs(runA.player().x - runB.player().x) < 0.001f &&
+                std::abs(runA.player().y - runB.player().y) < 0.001f &&
+                runA.coins() == runB.coins() && runA.deaths() == runB.deaths();
+
+            const auto replayFile =
+                std::filesystem::temp_directory_path() / "platformmaker-selftest.replay.json";
+            const bool replaySaved = pm::saveReplay(replayFile.string(), recorder.replay());
+            pm::Replay loadedReplay;
+            const bool replayLoaded =
+                replaySaved && pm::loadReplay(replayFile.string(), loadedReplay);
+            const bool replayFileOk =
+                replayLoaded && loadedReplay.steps == recorder.replay().steps &&
+                loadedReplay.bits == recorder.replay().bits;
+
+            const bool same = saved && codeSame && deterministic && replayFileOk && roundTrip.w == app.level.w &&
                               roundTrip.h == app.level.h &&
                               roundTrip.tiles == app.level.tiles &&
                               roundTrip.entities.size() == app.level.entities.size() &&
                               roundTrip.startTx == app.level.startTx &&
                               roundTrip.startTy == app.level.startTy;
-            std::printf("selftest: %s (%dx%d, %zu entities, %llu bytes)\n",
+            std::printf("selftest: %s (%dx%d, %zu entities, json %llu bytes, code %zu chars)\n",
                         same ? "OK" : "FAIL", app.level.w, app.level.h,
                         app.level.entities.size(),
                         static_cast<unsigned long long>(
-                            std::filesystem::exists(tmp) ? std::filesystem::file_size(tmp) : 0));
+                            std::filesystem::exists(tmp) ? std::filesystem::file_size(tmp) : 0),
+                        code.size());
+            std::printf("  level format round-trip: %s\n", codeSame ? "OK" : "FAIL");
+            std::printf("  replay determinism:      %s\n", deterministic ? "OK" : "FAIL");
+            std::printf("  replay file round-trip:  %s\n", replayFileOk ? "OK" : "FAIL");
+            std::printf("    A: x=%.3f y=%.3f coins=%d deaths=%d\n", runA.player().x,
+                        runA.player().y, runA.coins(), runA.deaths());
+            std::printf("    B: x=%.3f y=%.3f coins=%d deaths=%d\n", runB.player().x,
+                        runB.player().y, runB.coins(), runB.deaths());
+            if (!codeErr.empty()) std::printf("  share code error: %s\n", codeErr.c_str());
             return same ? 0 : 1;
         }
 
@@ -492,7 +598,7 @@ int main(int argc, char** argv) {
         app.editor.camX = 0.0f;
         app.editor.camY = 0.0f;
 
-        if (opts.play) {
+        if (opts.replayPath.empty() && opts.play) {
             app.world = std::make_unique<World>(app.level, app.content);
             app.playing = true;
 
@@ -516,6 +622,47 @@ int main(int argc, char** argv) {
         bool shotSaved = false;
         float accumulator = 0.0f;
         Uint64 previous = SDL_GetTicks();
+
+        auto enterPlay = [&]() {
+            app.world = std::make_unique<World>(app.level, app.content);
+            app.playing = true;
+            app.replayMode = false;
+            app.replayDone = false;
+            app.replay.reset();
+            app.recorder.reset(pm::encodeLevelCode(app.level, app.content));
+            accumulator = 0.0f;
+        };
+
+        auto leavePlay = [&]() {
+            if (app.playing && !app.replayMode && !app.recorder.empty()) {
+                const auto path = replayPath();
+                if (pm::saveReplay(path.string(), app.recorder.replay())) {
+                    setStatus(app, "replay saved: " + path.string());
+                }
+            }
+            app.playing = false;
+            app.world.reset();
+            app.replay.reset();
+            app.replayMode = false;
+            app.replayDone = false;
+        };
+
+        if (!opts.replayPath.empty()) {
+            pm::Replay recorded;
+            if (!pm::loadReplay(opts.replayPath, recorded)) {
+                std::fprintf(stderr, "replay: cannot read %s\n", opts.replayPath.c_str());
+                return 3;
+            }
+            const std::string err = pm::decodeLevelCode(recorded.levelCode, app.content, app.level);
+            if (!err.empty()) {
+                std::fprintf(stderr, "replay level: %s\n", err.c_str());
+                return 3;
+            }
+            app.world = std::make_unique<World>(app.level, app.content);
+            app.playing = true;
+            app.replayMode = true;
+            app.replay = std::make_unique<pm::ReplayPlayer>(std::move(recorded));
+        }
 
         while (running) {
             const Uint64 now = SDL_GetTicks();
@@ -542,22 +689,38 @@ int main(int argc, char** argv) {
                     const SDL_Keycode key = event.key.key;
                     if (key == SDLK_ESCAPE) {
                         if (app.playing) {
-                            app.playing = false;
-                            app.world.reset();
+                            leavePlay();
                         } else {
                             running = false;
                         }
                     } else if (key == SDLK_TAB) {
                         if (app.playing) {
-                            app.playing = false;
-                            app.world.reset();
+                            leavePlay();
                         } else {
-                            app.world = std::make_unique<World>(app.level, app.content);
-                            app.playing = true;
-                            accumulator = 0.0f;
+                            enterPlay();
                         }
                     } else if (!app.playing) {
-                        if (key >= SDLK_1 && key <= SDLK_6) {
+                        const bool ctrl = (event.key.mod & SDL_KMOD_CTRL) != 0;
+                        if (ctrl && key == SDLK_C) {
+                            const std::string code = pm::encodeLevelCode(app.level, app.content);
+                            SDL_SetClipboardText(code.c_str());
+                            setStatus(app, "code copied (" + std::to_string(code.size()) +
+                                               " chars) - paste it in the caption");
+                        } else if (ctrl && key == SDLK_V) {
+                            char* text = SDL_GetClipboardText();
+                            if (text) {
+                                Level decoded;
+                                const std::string err =
+                                    pm::decodeLevelCode(text, app.content, decoded);
+                                SDL_free(text);
+                                if (err.empty()) {
+                                    app.level = std::move(decoded);
+                                    setStatus(app, "level loaded from clipboard");
+                                } else {
+                                    setStatus(app, "paste failed: " + err);
+                                }
+                            }
+                        } else if (key >= SDLK_1 && key <= SDLK_6) {
                             app.editor.brush = static_cast<int>(key - SDLK_1);
                             app.editor.entityMode = false;
                         } else if (key == SDLK_E) {
@@ -640,21 +803,34 @@ int main(int argc, char** argv) {
 
             if (app.playing) {
                 InputState input;
-                input.left = keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A];
-                input.right = keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D];
-                input.jump = keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP] ||
-                             keys[SDL_SCANCODE_W];
-                input.run = keys[SDL_SCANCODE_LSHIFT] || keys[SDL_SCANCODE_RSHIFT];
+                if (!app.replayMode) {
+                    input.left = keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_A];
+                    input.right = keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_D];
+                    input.jump = keys[SDL_SCANCODE_SPACE] || keys[SDL_SCANCODE_UP] ||
+                                 keys[SDL_SCANCODE_W];
+                    input.run = keys[SDL_SCANCODE_LSHIFT] || keys[SDL_SCANCODE_RSHIFT];
 
-                static bool wasJump = false;
-                input.jumpPressed = input.jump && !wasJump;
-                wasJump = input.jump;
+                    static bool wasJump = false;
+                    input.jumpPressed = input.jump && !wasJump;
+                    wasJump = input.jump;
+                }
 
                 app.world->setViewport(viewW, viewH);
                 constexpr float step = 1.0f / 120.0f;
                 int steps = 0;
                 while (accumulator >= step && steps < 8) {
-                    app.world->update(step, input);
+                    InputState stepInput = input;
+                    if (app.replayMode) {
+                        if (!app.replay || app.replay->done()) {
+                            app.replayDone = true;
+                            accumulator = 0.0f;
+                            break;
+                        }
+                        stepInput = app.replay->next();
+                    } else {
+                        app.recorder.step(stepInput);
+                    }
+                    app.world->update(step, stepInput);
                     accumulator -= step;
                     ++steps;
                     input.jumpPressed = false;
@@ -676,7 +852,7 @@ int main(int argc, char** argv) {
                 drawLevel(renderer, app, cam.x, cam.y, viewW, viewH);
                 drawEntities(renderer, app.content, app.world->entities(), cam.x, cam.y);
                 drawPlayer(renderer, app.world->player(), cam.x, cam.y);
-                drawPlayHud(renderer, *app.world, viewW, viewH);
+                drawPlayHud(renderer, *app.world, viewW, viewH, app.replayMode);
             } else {
                 drawBackground(renderer, app.editor.camX, viewW, viewH, app.level.theme);
                 drawLevel(renderer, app, app.editor.camX, app.editor.camY, viewW, viewH);

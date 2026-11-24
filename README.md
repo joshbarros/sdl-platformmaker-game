@@ -14,8 +14,10 @@ engine has no hardcoded level, no hardcoded tiles, and no hardcoded entities.
 - Camera with deadzone and level clamping, parallax hills
 - Walkers (patrol, stomp, ledge detection), coins, checkpoints, goal
 - In-game editor: paint tiles, place entities, erase, free camera, grid snapping
+- **Share codes**: a whole level as text (`PM1-…`), 158 characters for the shipped 64x15 level
+- **Replays**: an input log that reproduces a run exactly (deterministic simulation)
 - Save/load `.lvl.json` (F5 / F9), test-play with TAB, back to editing with TAB
-- `--selftest` round-trips the level format (CI smoke test)
+- `--selftest` round-trips the level format **and** replay determinism (CI smoke test)
 - `--auto <seconds>` drives the simulation before a screenshot (visual smoke test)
 
 ## Build
@@ -39,7 +41,7 @@ build/Release/platformmaker.exe                  # editor, campaign level 1-1
 build/Release/platformmaker.exe --play           # straight into play mode
 build/Release/platformmaker.exe --shot a.bmp     # render one frame and quit
 build/Release/platformmaker.exe --auto 6 --play --shot a.bmp
-build/Release/platformmaker.exe --selftest       # format round-trip check
+build/Release/platformmaker.exe --selftest       # format + replay checks
 ```
 
 ## Controls
@@ -50,12 +52,47 @@ build/Release/platformmaker.exe --selftest       # format round-trip check
 | Editor | `[` `]` / `E` | cycle entity type / toggle entity mode |
 | Editor | LMB / RMB | paint / erase |
 | Editor | WASD or arrows | pan camera |
+| Editor | `Ctrl+C` / `Ctrl+V` | copy / paste share code |
 | Editor | `F5` / `F9` | save / load user level |
 | Editor | `TAB` | test-play the level |
 | Play | arrows / `A` `D` | move |
 | Play | `Space` / `W` / `Up` | jump |
 | Play | `Shift` | run |
 | Play | `R` / `TAB` / `Esc` | restart / back to editor |
+| Play | automatic | the run is recorded and saved when you leave play mode |
+
+## Sharing a level
+
+`Ctrl+C` in the editor puts a code like this on the clipboard:
+
+```text
+PM1-UE0BQAAPAAIADAAAAP__FAMFAEcEAQApAwUADQIDAAMCAwCNBQMADQEUAAMBEQADASkAAwERAAMBFQsAAAoACQAACwAJAAAMAAkAABQABwAAFQAHAAEQAAwAAR4ADAACGAALAAEuAAwAACwACgADPAAKAA
+```
+
+158 characters for the shipped level. It is `PM1-` plus base64url of a packed
+payload: size, start, theme, run-length-encoded tiles and entity placements. No
+server, no JSON inside the code, and no compression library — so it fits in a
+caption or a chat message, and anyone can paste it back with `Ctrl+V`.
+
+CLI equivalents:
+
+```sh
+platformmaker --share                      # prints the code for the loaded level
+platformmaker --from-share PM1-... --play  # loads a code and starts playing
+```
+
+## Replays
+
+While you play, every input is recorded (4 bits per fixed step). Leaving play
+mode saves the run to `%APPDATA%/platformmaker/replays/last.replay.json`.
+
+Because the simulation is fixed-step with no randomness, replaying that log
+reproduces the run exactly — same position, coins and deaths. That is what makes
+ghosts, verified records and auto-generated clips possible later.
+
+```sh
+platformmaker --replay path/to/last.replay.json
+```
 
 ## Level format
 
@@ -83,11 +120,11 @@ Human-editable JSON, with the map as ASCII rows:
 
 - `assets/tiles.json` maps symbols to tile behaviour (`solid`, `oneWay`, `hazard`) and color.
 - `assets/entities.json` declares entity types, sizes and colors.
-- Unknown symbols load as air instead of failing, so an old build can still open
-  a level made with newer packs.
+- Unknown symbols load as air instead of failing, so an older build can still
+  open a level made with newer packs.
 
-Saving writes the same shape, so a level made in the editor is byte-for-byte the
-kind of file you can hand-edit in any text editor or review in a Git diff.
+Saving writes the same shape, so a level made in the editor is the kind of file
+you can hand-edit in any text editor or review in a Git diff.
 
 ## Business model
 
@@ -99,8 +136,11 @@ JSON behind a declarative manifest, a pack never needs a new build.
 
 - [ ] autotile for ground edges and corners
 - [ ] undo/redo and area copy/paste in the editor
+- [x] share codes (packed binary + base64url)
+- [ ] level browser / optional server for discovery
+- [ ] ghost overlay of your best replay while playing
+- [ ] clip export (9:16 frames + GIF) with the code burned in
 - [ ] level validation before publishing (spawn, goal, reachability)
-- [ ] share codes (`zlib` + base64 of the JSON) and level browser
 - [ ] more entities: springs, moving platforms, keys/doors, bosses
 - [ ] campaign chapters 1-2 … 1-4 and a level-select screen
 - [ ] Web build (Emscripten) for itch.io
