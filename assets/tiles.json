@@ -1,0 +1,10 @@
+{
+  "tiles": [
+    { "symbol": ".", "name": "air",      "solid": false, "hazard": false, "color": "#000000" },
+    { "symbol": "#", "name": "ground",   "solid": true,  "color": "#5b8c3e" },
+    { "symbol": "B", "name": "brick",    "solid": true,  "color": "#a4552f" },
+    { "symbol": "=", "name": "platform", "solid": true, "oneWay": true, "color": "#c7a15a" },
+    { "symbol": "?", "name": "question", "solid": true,  "color": "#e0b64a" },
+    { "symbol": "^", "name": "spike",    "solid": false, "hazard": true, "color": "#9aa0a6" }
+  ]
+}
